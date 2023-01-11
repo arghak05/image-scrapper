@@ -2,6 +2,7 @@ import os
 import time
 import requests
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 
 
 def fetch_image_urls(query: str, max_links_to_fetch: int, wd: webdriver, sleep_between_interactions: int = 1):
@@ -23,7 +24,8 @@ def fetch_image_urls(query: str, max_links_to_fetch: int, wd: webdriver, sleep_b
         scroll_to_end(wd)
 
         # get all image thumbnail results
-        thumbnail_results = wd.find_elements_by_css_selector("img.Q4LuWd")
+        #thumbnail_results = wd.find_elements_by_css_selector("img.Q4LuWd")
+        thumbnail_results = (wd.find_elements(By.CSS_SELECTOR, 'img.Q4LuWd'))
         number_results = len(thumbnail_results)
 
         print(f"Found: {number_results} search results. Extracting links from {results_start}:{number_results}")
@@ -37,7 +39,8 @@ def fetch_image_urls(query: str, max_links_to_fetch: int, wd: webdriver, sleep_b
                 continue
 
             # extract image urls
-            actual_images = wd.find_elements_by_css_selector('img.n3VNCb')
+            #actual_images = wd.find_elements_by_css_selector('img.n3VNCb')
+            actual_images = wd.find_elements(By.CSS_SELECTOR, 'img.n3VNCb')
             for actual_image in actual_images:
                 if actual_image.get_attribute('src') and 'http' in actual_image.get_attribute('src'):
                     image_urls.add(actual_image.get_attribute('src'))
@@ -51,7 +54,8 @@ def fetch_image_urls(query: str, max_links_to_fetch: int, wd: webdriver, sleep_b
             print("Found:", len(image_urls), "image links, looking for more ...")
             time.sleep(30)
             return
-            load_more_button = wd.find_element_by_css_selector(".mye4qd")
+            #load_more_button = wd.find_element_by_css_selector(".mye4qd")
+            load_more_button = wd.find_elements(By.CSS_SELECTOR, ".mye4qd")
             if load_more_button:
                 wd.execute_script("document.querySelector('.mye4qd').click();")
 
@@ -92,16 +96,9 @@ def search_and_download(search_term: str, driver_path: str, target_path='./image
         counter += 1
 
 
-# How to execute this code
-# Step 1 : pip install selenium. pillow, requests
-# Step 2 : make sure you have chrome installed on your machine
-# Step 3 : Check your chrome version ( go to three dot then help then about google chrome )
-# Step 4 : Download the same chrome driver from here  " https://chromedriver.storage.googleapis.com/index.html "
-# Step 5 : put it inside the same folder of this code
 
-
-DRIVER_PATH = r'G:\iNeuron\ImageScrapper\chromedriver.exe'
-search_term = 'bmw car'
+DRIVER_PATH = r'G:\PYTHON PROJECTS FOR BEGINNERS\image-scrapper\chromedriver.exe'
+search_term = 'dogs'
 # num of images you can pass it from here  by default it's 10 if you are not passing
 #number_images = 50
-search_and_download(search_term=search_term, driver_path=DRIVER_PATH, number_images=150)
+search_and_download(search_term=search_term, driver_path=DRIVER_PATH, number_images=5)
